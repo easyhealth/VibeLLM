@@ -1,13 +1,17 @@
-# LLM Proxy 轻量级本地 LLM 代理
+# MyLLM 轻量级本地 LLM 代理
 
 [English](README.md) | 中文
 
-轻量级本地 LLM 代理，支持多提供商管理，满足个人使用需求。帮你在碰到速率限制时自动切换线路，自动选择延迟最低的最快线路。
+轻量级本地 LLM 代理，带隐私保护，支持多提供商管理，满足个人使用需求。自动检测个人信息，敏感数据走本地，复杂任务匿名化后走大模型。帮你在碰到速率限制时自动切换线路，自动选择延迟最低的最快线路。
 
 ## 功能特性
 
 - ✅ **超轻量**: 安装后仅约 8MB (对比 litellm-proxy 超过 100MB)
+- ✅ **隐私保护**: 自动检测 PII (个人可识别信息)
+  - PII 数量少 → 直接路由到本地 LLM，数据不出城
+  - PII 数量多 → 匿名化替换为占位符，发送给远程大模型，返回后自动还原原始数据
 - ✅ 双端点支持: 同时提供 OpenAI 兼容 (`/v1/chat/completions`) 和 Anthropic 兼容 (`/v1/messages`) 本地端点
+- ✅ 本地 LLM 支持: 原生支持 Ollama、llama.cpp 以及任意 OpenAI 兼容的本地服务
 - ✅ 多提供商管理: 通过 CLI 轻松添加/删除/启用/禁用提供商
 - ✅ 自动故障转移: 碰到速率限制时，自动尝试下一个提供商
 - ✅ 延迟基准测试: 测试哪个提供商最快并自动选择
@@ -18,22 +22,25 @@
 
 ## 支持的格式转换
 
-| 输入格式 \ 目标 | OpenAI | Anthropic | Gemini |
-|----------------|--------|-----------|--------|
-| OpenAI         | ✅ 直传 | ✅ 转换 | ✅ 转换 |
-| Anthropic      | ✅ 转换 | ✅ 直传 | ✅ 转换 |
+| 输入格式 \ 目标 | OpenAI | Anthropic | Gemini | 本地 (OpenAI 兼容) |
+|----------------|--------|-----------|--------|-------------------|
+| OpenAI         | ✅ 直传 | ✅ 转换 | ✅ 转换 | ✅ 直传 |
+| Anthropic      | ✅ 转换 | ✅ 直传 | ✅ 转换 | ✅ 转换 |
 
 ## 安装
 
+### PyPI 安装 (推荐)
+
 ```bash
-git clone https://github.com/你的用户名/llm-proxy.git
-cd llm-proxy
-pip install -e .
+pip install myllm
 ```
 
-PyPI 安装(发布后):
+### 源码安装
+
 ```bash
-pip install llm-proxy
+git clone https://github.com/easyhealth/MyLLM.git
+cd MyLLM
+pip install -e .
 ```
 
 ## 快速开始

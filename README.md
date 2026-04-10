@@ -1,14 +1,16 @@
-# LLM Proxy
+# MyLLM
 
 English | [中文](README.zh-CN.md)
 
-Lightweight local LLM proxy with multiple provider management for personal use.
+Lightweight local LLM proxy with multiple provider management, privacy protection, and automatic failover for personal use.
 
 ## Features
 
 - ✅ **Lightweight**: Only ~8MB install size (vs 100MB+ for litellm-proxy)
+- ✅ **Privacy Protection**: Automatically detect PII (personal identifiable information), route simple PII to local LLM, anonymize complex PII for remote LLM and restore automatically
 - ✅ Dual endpoints: Provides both OpenAI-compatible (`/v1/chat/completions`) and Anthropic-compatible (`/v1/messages`) localhost endpoints
 - ✅ Multiple provider management: Add/remove/enable/disable providers with CLI
+- ✅ Support local LLMs: Native support for Ollama, llama.cpp, and any OpenAI-compatible local servers
 - ✅ Automatic failover: When you hit rate limit, automatically try the next provider
 - ✅ Latency benchmarking: Test which provider is fastest and auto-select
 - ✅ Format translation: A client configured for OpenAI can call Anthropic/Gemini, and vice versa
@@ -16,16 +18,24 @@ Lightweight local LLM proxy with multiple provider management for personal use.
 
 ## Supported Providers
 
-| Incoming \ Target | OpenAI | Anthropic | Gemini |
-|-------------------|--------|-----------|--------|
-| OpenAI            | ✅ Direct | ✅ Translate | ✅ Translate |
-| Anthropic         | ✅ Translate | ✅ Direct | ✅ Translate |
+| Incoming \ Target | OpenAI | Anthropic | Gemini | Local (OpenAI-compatible) |
+|-------------------|--------|-----------|--------|---------------------------|
+| OpenAI            | ✅ Direct | ✅ Translate | ✅ Translate | ✅ Direct |
+| Anthropic         | ✅ Translate | ✅ Direct | ✅ Translate | ✅ Translate |
 
 ## Installation
 
+### Install from PyPI (recommended)
+
 ```bash
-git clone https://github.com/yourusername/llm-proxy.git
-cd llm-proxy
+pip install myllm-proxy
+```
+
+### Install from source
+
+```bash
+git clone https://github.com/easyhealth/MyLLM.git
+cd MyLLM
 pip install -e .
 ```
 
