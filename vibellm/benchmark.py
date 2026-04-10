@@ -2,9 +2,9 @@
 
 import asyncio
 from typing import List, Tuple, Optional
-from myllm.models import Config, ProviderConfig, BenchmarkResult
-from myllm.proxy import LLMProxy
-from myllm.config import load_config, update_provider_latency, save_config, set_default_provider
+from vibellm.models import Config, ProviderConfig, BenchmarkResult
+from vibellm.proxy import LLMProxy
+from vibellm.config import load_config, update_provider_latency, save_config, set_default_provider
 
 
 class BenchmarkRunner:

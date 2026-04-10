@@ -1,4 +1,4 @@
-# MyLLM
+# VibeLLM
 
 English | [中文](README.zh-CN.md)
 
@@ -28,14 +28,14 @@ Lightweight local LLM proxy with multiple provider management, privacy protectio
 ### Install from PyPI (recommended)
 
 ```bash
-pip install myllm-proxy
+pip install vibellm
 ```
 
 ### Install from source
 
 ```bash
-git clone https://github.com/easyhealth/MyLLM.git
-cd MyLLM
+git clone https://github.com/easyhealth/VibeLLM.git
+cd VibeLLM
 pip install -e .
 ```
 
@@ -92,7 +92,7 @@ This will:
 To use as a Claude Code skill, add this to your Claude Code skills directory:
 
 ```
-ln -s D:/llm-proxy/myllm-skills/llm_proxy.py ~/.config/claude-code/skills/
+ln -s D:/VibeLLM/vibellm-skills/llm_proxy.py ~/.config/claude-code/skills/
 ```
 
 Then Claude can respond to natural language commands like:
@@ -104,7 +104,7 @@ Then Claude can respond to natural language commands like:
 
 ## Configuration
 
-Configuration is stored at `~/.config/llm-proxy/config.yaml`:
+Configuration is stored at `~/.config/vibellm/config.yaml`:
 
 ```yaml
 default_provider: openai-main

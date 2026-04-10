@@ -8,7 +8,7 @@ from pydantic_settings import BaseSettings
 from .models import Config, ProviderConfig
 
 # Default config location
-DEFAULT_CONFIG_DIR = Path.home() / ".config" / "llm-proxy"
+DEFAULT_CONFIG_DIR = Path.home() / ".config" / "vibellm"
 DEFAULT_CONFIG_PATH = DEFAULT_CONFIG_DIR / "config.yaml"
 
 
@@ -17,7 +17,7 @@ class LLMSettings(BaseSettings):
     config_path: Path = DEFAULT_CONFIG_PATH
 
     class Config:
-        env_prefix = "LLM_PROXY_"
+        env_prefix = "VIBELLM_"
         env_file = ".env"
 
 

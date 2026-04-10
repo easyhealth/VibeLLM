@@ -1,4 +1,4 @@
-# MyLLM 轻量级本地 LLM 代理
+# VibeLLM 轻量级本地 LLM 代理
 
 [English](README.md) | 中文
 
@@ -32,14 +32,14 @@
 ### PyPI 安装 (推荐)
 
 ```bash
-pip install myllm
+pip install vibellm
 ```
 
 ### 源码安装
 
 ```bash
-git clone https://github.com/easyhealth/MyLLM.git
-cd MyLLM
+git clone https://github.com/easyhealth/VibeLLM.git
+cd VibeLLM
 pip install -e .
 ```
 
@@ -129,7 +129,7 @@ llm-proxy benchmark --auto-set
 要作为 Claude Code 技能使用，将技能链接到你的 Claude Code 技能目录：
 
 ```bash
-ln -s /path/to/MyLLM/myllm-skills/llm_proxy.py ~/.config/claude-code/skills/
+ln -s /path/to/VibeLLM/vibellm-skills/llm_proxy.py ~/.config/claude-code/skills/
 ```
 
 然后 Claude 就可以理解自然语言命令，比如：
@@ -141,7 +141,7 @@ ln -s /path/to/MyLLM/myllm-skills/llm_proxy.py ~/.config/claude-code/skills/
 
 ## 配置文件
 
-配置存储在 `~/.config/llm-proxy/config.yaml`:
+配置存储在 `~/.config/vibellm/config.yaml`:
 
 ```yaml
 default_provider: openai-main

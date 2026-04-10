@@ -1,5 +1,5 @@
 [project]
-name = "myllm"
+name = "vibellm"
 version = "0.1.0"
 description = "Lightweight local LLM proxy with multiple provider management, automatic failover, privacy protection, and latency-based selection."
 readme = "README.md"
@@ -47,12 +47,12 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/easyhealth/MyLLM"
-"Bug Reports" = "https://github.com/easyhealth/MyLLM/issues"
-"Source" = "https://github.com/easyhealth/MyLLM"
+"Homepage" = "https://github.com/easyhealth/VibeLLM"
+"Bug Reports" = "https://github.com/easyhealth/VibeLLM/issues"
+"Source" = "https://github.com/easyhealth/VibeLLM"
 
 [project.scripts]
-llm-proxy = "myllm.cli:main"
+llm-proxy = "vibellm.cli:main"
 
 [build-system]
 requires = ["setuptools>=61.0"]

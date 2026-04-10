@@ -9,7 +9,16 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:pypi.org)",
       "Bash(xargs sed:*)",
-      "Bash(grep -n \"llm-proxy\" myllm/*.py)"
+      "Bash(grep -n \"llm-proxy\" vibellm/*.py)",
+      "Bash(winget install:*)",
+      "Bash(refreshenv)",
+      "Bash(where gh:*)",
+      "WebSearch",
+      "Bash(gh run:*)",
+      "Read(//d//**)",
+      "Bash(mv llm-proxy:*)",
+      "Bash(find . -name \"*.py\" -type f -exec grep -l \"myllm\" {} \\\\;)",
+      "Bash(git add:*)"
     ]
   }
 }

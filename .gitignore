@@ -39,7 +39,7 @@ env/
 
 # Configuration with secrets
 config.yaml
-~/.config/llm-proxy/config.yaml
+~/.config/vibellm/config.yaml
 
 # OS
 .DS_Store

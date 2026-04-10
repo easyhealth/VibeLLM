@@ -1,5 +1,5 @@
-# Example configuration for LLM Proxy
-# Copy this to ~/.config/llm-proxy/config.yaml and edit
+# Example configuration for VibeLLM
+# Copy this to ~/.config/vibellm/config.yaml and edit
 
 # Default provider to use when none is explicitly requested
 default_provider: openai-main
