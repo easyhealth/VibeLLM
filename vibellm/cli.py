@@ -32,11 +32,11 @@ def start_command(host, port):
     """Start the LLM proxy server."""
     config = load_config()
     if not config.providers:
-        click.echo("No providers configured. Use 'llm-proxy add' to add a provider.", err=True)
+        click.echo("No providers configured. Use 'vibellm add' to add a provider.", err=True)
         sys.exit(1)
 
     if not config.default_provider:
-        click.echo("No default provider set. Use 'llm-proxy default <name>' to set one.", err=True)
+        click.echo("No default provider set. Use 'vibellm default <name>' to set one.", err=True)
         sys.exit(1)
 
     click.echo(f"Starting LLM proxy on http://{host}:{port}")
@@ -114,7 +114,7 @@ def list_command():
     config = load_config()
 
     if not config.providers:
-        click.echo("No providers configured. Use 'llm-proxy add' to add one.")
+        click.echo("No providers configured. Use 'vibellm add' to add one.")
         return
 
     table = []
@@ -290,7 +290,7 @@ def status_command():
             click.echo(f"  Enabled providers: {data.get('enabled_providers')}")
     except (URLError, socket.timeout):
         click.echo(click.style("NOT RUNNING Server is not running on port 8080", fg="yellow"))
-        click.echo("  Start it with: llm-proxy start")
+        click.echo("  Start it with: vibellm start")
 
 
 if __name__ == "__main__":

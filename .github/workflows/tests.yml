@@ -25,6 +25,6 @@ jobs:
         pip install -e .
     - name: Basic CLI tests
       run: |
-        llm-proxy --version
-        llm-proxy --help
-        llm-proxy status
+        vibellm --version
+        vibellm --help
+        vibellm status

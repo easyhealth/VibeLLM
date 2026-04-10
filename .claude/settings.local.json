@@ -18,7 +18,10 @@
       "Read(//d//**)",
       "Bash(mv llm-proxy:*)",
       "Bash(find . -name \"*.py\" -type f -exec grep -l \"myllm\" {} \\\\;)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(grep:*)"
     ]
   }
 }

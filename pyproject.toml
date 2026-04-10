@@ -52,7 +52,7 @@ dependencies = [
 "Source" = "https://github.com/easyhealth/VibeLLM"
 
 [project.scripts]
-llm-proxy = "vibellm.cli:main"
+vibellm = "vibellm.cli:main"
 
 [build-system]
 requires = ["setuptools>=61.0"]

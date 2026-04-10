@@ -47,7 +47,7 @@ pip install -e .
 
 1. 添加第一个提供商:
 ```bash
-llm-proxy add \
+vibellm add \
   --name openai \
   --base-url https://api.openai.com/v1 \
   --api-key sk-xxx \
@@ -58,7 +58,7 @@ llm-proxy add \
 
 2. 启动服务器:
 ```bash
-llm-proxy start --port 8080
+vibellm start --port 8080
 ```
 
 3. 在你的客户端配置:
@@ -69,22 +69,22 @@ llm-proxy start --port 8080
 
 | 命令 | 说明 |
 |---------|-------------|
-| `llm-proxy start` | 启动代理服务器 |
-| `llm-proxy add` | 添加新提供商 |
-| `llm-proxy remove` | 删除提供商 |
-| `llm-proxy list` | 列出所有提供商 |
-| `llm-proxy enable <name>` | 启用提供商 |
-| `llm-proxy disable <name>` | 禁用提供商 |
-| `llm-proxy default <name>` | 设置默认提供商 |
-| `llm-proxy test <name>` | 测试提供商连通性 |
-| `llm-proxy benchmark` | 测试所有提供商延迟 |
-| `llm-proxy benchmark --auto-set` | 测试并自动设置最快为默认 |
-| `llm-proxy status` | 显示当前状态 |
+| `vibellm start` | 启动代理服务器 |
+| `vibellm add` | 添加新提供商 |
+| `vibellm remove` | 删除提供商 |
+| `vibellm list` | 列出所有提供商 |
+| `vibellm enable <name>` | 启用提供商 |
+| `vibellm disable <name>` | 禁用提供商 |
+| `vibellm default <name>` | 设置默认提供商 |
+| `vibellm test <name>` | 测试提供商连通性 |
+| `vibellm benchmark` | 测试所有提供商延迟 |
+| `vibellm benchmark --auto-set` | 测试并自动设置最快为默认 |
+| `vibellm status` | 显示当前状态 |
 
 ### 添加提供商参数
 
 ```bash
-llm-proxy add \
+vibellm add \
   --name NAME \
   --base-url BASE_URL \
   --api-key API_KEY \
@@ -116,7 +116,7 @@ providers:
 
 找到最快的提供商：
 ```bash
-llm-proxy benchmark --auto-set
+vibellm benchmark --auto-set
 ```
 
 这会：

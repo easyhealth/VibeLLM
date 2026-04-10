@@ -1,4 +1,4 @@
-"""Entry point for llm-proxy."""
+"""Entry point for vibellm."""
 
 from vibellm.cli import main
 

@@ -43,7 +43,7 @@ pip install -e .
 
 1. Add your first provider:
 ```bash
-llm-proxy add \
+vibellm add \
   --name openai \
   --base-url https://api.openai.com/v1 \
   --api-key sk-xxx \
@@ -52,7 +52,7 @@ llm-proxy add \
 
 2. Start the server:
 ```bash
-llm-proxy start --port 8080
+vibellm start --port 8080
 ```
 
 3. Configure your client to use:
@@ -63,23 +63,23 @@ llm-proxy start --port 8080
 
 | Command | Description |
 |---------|-------------|
-| `llm-proxy start` | Start the proxy server |
-| `llm-proxy add` | Add a new provider |
-| `llm-proxy remove` | Remove a provider |
-| `llm-proxy list` | List all providers |
-| `llm-proxy enable <name>` | Enable a provider |
-| `llm-proxy disable <name>` | Disable a provider |
-| `llm-proxy default <name>` | Set default provider |
-| `llm-proxy test <name>` | Test connectivity to a provider |
-| `llm-proxy benchmark` | Test latency for all providers |
-| `llm-proxy benchmark --auto-set` | Test and set fastest as default |
-| `llm-proxy status` | Show server status |
+| `vibellm start` | Start the proxy server |
+| `vibellm add` | Add a new provider |
+| `vibellm remove` | Remove a provider |
+| `vibellm list` | List all providers |
+| `vibellm enable <name>` | Enable a provider |
+| `vibellm disable <name>` | Disable a provider |
+| `vibellm default <name>` | Set default provider |
+| `vibellm test <name>` | Test connectivity to a provider |
+| `vibellm benchmark` | Test latency for all providers |
+| `vibellm benchmark --auto-set` | Test and set fastest as default |
+| `vibellm status` | Show server status |
 
 ## Benchmarking
 
 Find your fastest provider:
 ```bash
-llm-proxy benchmark --auto-set
+vibellm benchmark --auto-set
 ```
 
 This will:

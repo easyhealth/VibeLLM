@@ -1,4 +1,4 @@
-"""Claude Code skill integration for LLM Proxy management."""
+"""Claude Code skill integration for VibeLLM management."""
 
 import subprocess
 import json
@@ -15,13 +15,13 @@ class SkillResult:
 
 
 class LLMProxySkill:
-    """Claude Code skill for managing LLM Proxy providers."""
+    """Claude Code skill for managing VibeLLM providers."""
 
-    def __init__(self, binary_path: str = "llm-proxy"):
+    def __init__(self, binary_path: str = "vibellm"):
         self.binary_path = binary_path
 
     def _run_command(self, args: List[str]) -> SkillResult:
-        """Run a llm-proxy command."""
+        """Run a vibellm command."""
         try:
             result = subprocess.run(
                 [self.binary_path] + args,
