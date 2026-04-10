@@ -6,7 +6,7 @@ on:
 
 permissions:
   contents: read
-  pypi-token: write
+  id-token: write
 
 jobs:
   deploy:
