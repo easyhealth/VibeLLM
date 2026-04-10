@@ -5,7 +5,11 @@
       "Bash(llm-proxy:*)",
       "Bash(python:*)",
       "Bash(pip freeze:*)",
-      "Bash(findstr -i \"fastapi uvicorn httpx click pydantic pydantic-settings pyyaml tabulate\")"
+      "Bash(findstr -i \"fastapi uvicorn httpx click pydantic pydantic-settings pyyaml tabulate\")",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:pypi.org)",
+      "Bash(xargs sed:*)",
+      "Bash(grep -n \"llm-proxy\" myllm/*.py)"
     ]
   }
 }

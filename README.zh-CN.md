@@ -122,7 +122,7 @@ llm-proxy benchmark --auto-set
 要作为 Claude Code 技能使用，将技能链接到你的 Claude Code 技能目录：
 
 ```bash
-ln -s /path/to/llm-proxy/llm-proxy-skills/llm_proxy.py ~/.config/claude-code/skills/
+ln -s /path/to/MyLLM/myllm-skills/llm_proxy.py ~/.config/claude-code/skills/
 ```
 
 然后 Claude 就可以理解自然语言命令，比如：

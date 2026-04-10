@@ -1,6 +1,6 @@
 """Entry point for llm-proxy."""
 
-from llm_proxy.cli import main
+from myllm.cli import main
 
 if __name__ == "__main__":
     main()

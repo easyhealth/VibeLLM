@@ -4,6 +4,15 @@
 # Default provider to use when none is explicitly requested
 default_provider: openai-main
 
+# Privacy settings: automatically detect PII (personal identifiable information) and route accordingly
+# - If PII count <= threshold: route to local LLM provider to keep data private
+# - If PII count > threshold and anonymization allowed: anonymize PII with placeholders,
+#   send to remote provider, then restore original PII in response
+privacy_enabled: false
+privacy_local_provider: ollama-local  # Optional: explicit local provider name
+privacy_pii_count_threshold: 3        # Threshold for switching to anonymized mode
+privacy_allow_remote_with_anonymization: true
+
 # List of configured providers
 providers:
   - name: openai-main
@@ -65,4 +74,15 @@ providers:
     priority: 10
     simple_model: llama3
     complex_model: llama3:70b
+    is_local: true  # Mark as local provider for privacy tasks
+    last_latency_ms: null
+
+  # Example for llama.cpp server (OpenAI-compatible)
+  - name: llama-cpp-local
+    base_url: http://localhost:8080/v1
+    api_key: ""
+    default_model: llama-3-8b
+    enabled: false
+    priority: 10
+    is_local: true
     last_latency_ms: null

@@ -1,7 +1,7 @@
 [project]
-name = "llm-proxy"
+name = "myllm"
 version = "0.1.0"
-description = "Lightweight local LLM proxy with multiple provider management, automatic failover, and latency-based selection."
+description = "Lightweight local LLM proxy with multiple provider management, automatic failover, privacy protection, and latency-based selection."
 readme = "README.md"
 keywords = [
   "llm",
@@ -47,12 +47,12 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/easyhealth/llm-proxy"
-"Bug Reports" = "https://github.com/easyhealth/llm-proxy/issues"
-"Source" = "https://github.com/easyhealth/llm-proxy"
+"Homepage" = "https://github.com/easyhealth/MyLLM"
+"Bug Reports" = "https://github.com/easyhealth/MyLLM/issues"
+"Source" = "https://github.com/easyhealth/MyLLM"
 
 [project.scripts]
-llm-proxy = "llm_proxy.cli:main"
+llm-proxy = "myllm.cli:main"
 
 [build-system]
 requires = ["setuptools>=61.0"]

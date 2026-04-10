@@ -4,7 +4,7 @@ This skill allows Claude Code to manage the LLM proxy providers,
 switch between providers when hitting rate limits, and run latency benchmarks.
 """
 
-from llm_proxy.claude_skill import LLMProxySkill
+from myllm.claude_skill import LLMProxySkill
 
 
 def run(query: str) -> str:

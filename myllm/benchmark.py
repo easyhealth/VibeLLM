@@ -2,9 +2,9 @@
 
 import asyncio
 from typing import List, Tuple, Optional
-from llm_proxy.models import Config, ProviderConfig, BenchmarkResult
-from llm_proxy.proxy import LLMProxy
-from llm_proxy.config import load_config, update_provider_latency, save_config, set_default_provider
+from myllm.models import Config, ProviderConfig, BenchmarkResult
+from myllm.proxy import LLMProxy
+from myllm.config import load_config, update_provider_latency, save_config, set_default_provider
 
 
 class BenchmarkRunner:

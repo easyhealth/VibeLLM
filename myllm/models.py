@@ -26,6 +26,7 @@ class ProviderConfig(BaseModel):
     model_mapping: Dict[str, str] = Field(default_factory=dict, description="Map generic model names to provider-specific names")
     simple_model: Optional[str] = Field(None, description="Model to use for simple tasks when model=auto")
     complex_model: Optional[str] = Field(None, description="Model to use for complex tasks when model=auto-complex")
+    is_local: bool = Field(False, description="Whether this is a local LLM provider (for privacy routing)")
 
     def resolve_model(self, requested_model: Optional[str]) -> str:
         """
@@ -74,6 +75,10 @@ class Config(BaseModel):
     """Root configuration for LLM Proxy."""
     default_provider: str
     providers: List[ProviderConfig] = Field(default_factory=list)
+    privacy_enabled: bool = Field(False, description="Enable privacy detection and routing")
+    privacy_local_provider: Optional[str] = Field(None, description="Name of the local provider to use for privacy tasks")
+    privacy_pii_count_threshold: int = Field(3, description="PII count threshold: below this → local, above this → anonymize + remote")
+    privacy_allow_remote_with_anonymization: bool = Field(True, description="Allow sending anonymized requests to remote providers")
 
     def get_provider(self, name: str) -> Optional[ProviderConfig]:
         """Get a provider by name."""
@@ -229,3 +234,23 @@ class BenchmarkResult(BaseModel):
     latency_ms: Optional[float] = None
     error: Optional[str] = None
     model: str
+
+
+# Privacy detection models
+class PIIMatch(BaseModel):
+    """A detected PII entity."""
+    entity_type: str
+    original_text: str
+    placeholder: str
+    start: int
+    end: int
+
+
+class AnonymizationResult(BaseModel):
+    """Result of request anonymization."""
+    anonymized_messages: List[Dict[str, Any]]
+    pii_mapping: Dict[str, PIIMatch]
+    pii_count: int
+    has_complex_pii: bool
+    should_route_local: bool
+    should_anonymize: bool

@@ -3,10 +3,11 @@
 import httpx
 from typing import Dict, Any, Optional, AsyncGenerator, Tuple
 from fastapi import Request
-from .models import Config, ProviderConfig, ProviderType
+from .models import Config, ProviderConfig, ProviderType, AnonymizationResult
 from .router import ProviderRouter
 from .translators import RequestTranslator, ResponseTranslator, StreamTranslator
 from .config import load_config
+from .privacy import PrivacyProcessor
 
 
 class LLMProxy:
@@ -16,6 +17,9 @@ class LLMProxy:
         self.config = config
         self.router = ProviderRouter(config)
         self.client = httpx.AsyncClient(timeout=httpx.Timeout(300.0))
+        self.privacy_processor: Optional[PrivacyProcessor] = None
+        if self.config.privacy_enabled:
+            self.privacy_processor = PrivacyProcessor()
 
     async def handle_openai_request(
         self,
@@ -26,6 +30,26 @@ class LLMProxy:
         """Handle an incoming OpenAI-format request."""
         requested_model = body.get("model")
         stream = body.get("stream", False)
+
+        # Privacy processing
+        privacy_result: Optional[AnonymizationResult] = None
+        original_requested_provider = requested_provider
+        if self.privacy_processor and self.config.privacy_enabled:
+            messages = body.get("messages", [])
+            if messages:
+                privacy_result = self.privacy_processor.process_request(
+                    messages,
+                    self.config.privacy_pii_count_threshold,
+                    self.config.privacy_allow_remote_with_anonymization,
+                )
+                # Update body with anonymized messages if needed
+                if privacy_result.should_anonymize:
+                    body["messages"] = privacy_result.anonymized_messages
+                # Override requested provider if we should route local
+                if privacy_result.should_route_local:
+                    local_provider_name = self.privacy_processor.get_local_provider(self.config)
+                    if local_provider_name:
+                        requested_provider = local_provider_name
 
         for provider in self.router.iterate_available(requested_provider):
             try:
@@ -45,9 +69,16 @@ class LLMProxy:
 
                 if stream:
                     # Return a streaming response generator
-                    return self._stream_response(
-                        provider, target_body, url, request_headers, "openai", resolved_model
-                    ), True, provider
+                    if privacy_result and privacy_result.should_anonymize and self.privacy_processor:
+                        # Need to buffer full response for PII restoration
+                        return self._buffered_stream_response(
+                            provider, target_body, url, request_headers, "openai", resolved_model,
+                            privacy_result.pii_mapping
+                        ), True, provider
+                    else:
+                        return self._stream_response(
+                            provider, target_body, url, request_headers, "openai", resolved_model
+                        ), True, provider
                 else:
                     # Non-streaming request
                     response = await self.client.post(
@@ -69,6 +100,19 @@ class LLMProxy:
                     final_response = ResponseTranslator.translate_to_openai(
                         response_json, provider, resolved_model
                     )
+
+                    # Restore PII if anonymized
+                    if privacy_result and privacy_result.should_anonymize and self.privacy_processor:
+                        # Restore content in response
+                        choices = final_response.get("choices", [])
+                        for choice in choices:
+                            if "message" in choice and "content" in choice["message"]:
+                                content = choice["message"]["content"]
+                                if isinstance(content, str):
+                                    restored = self.privacy_processor.restore_response(
+                                        content, privacy_result.pii_mapping
+                                    )
+                                    choice["message"]["content"] = restored
 
                     self.router.record_success(provider)
                     return final_response, False, provider
@@ -97,6 +141,26 @@ class LLMProxy:
         requested_model = body.get("model")
         stream = body.get("stream", False)
 
+        # Privacy processing
+        privacy_result: Optional[AnonymizationResult] = None
+        original_requested_provider = requested_provider
+        if self.privacy_processor and self.config.privacy_enabled:
+            messages = body.get("messages", [])
+            if messages:
+                privacy_result = self.privacy_processor.process_request(
+                    messages,
+                    self.config.privacy_pii_count_threshold,
+                    self.config.privacy_allow_remote_with_anonymization,
+                )
+                # Update body with anonymized messages if needed
+                if privacy_result.should_anonymize:
+                    body["messages"] = privacy_result.anonymized_messages
+                # Override requested provider if we should route local
+                if privacy_result.should_route_local:
+                    local_provider_name = self.privacy_processor.get_local_provider(self.config)
+                    if local_provider_name:
+                        requested_provider = local_provider_name
+
         for provider in self.router.iterate_available(requested_provider):
             try:
                 # Resolve model name (handles auto, mapping, etc)
@@ -114,9 +178,16 @@ class LLMProxy:
                 request_headers = self._prepare_headers(dict(request.headers), headers, provider)
 
                 if stream:
-                    return self._stream_response(
-                        provider, target_body, url, request_headers, "anthropic", resolved_model
-                    ), True, provider
+                    if privacy_result and privacy_result.should_anonymize and self.privacy_processor:
+                        # Need to buffer full response for PII restoration
+                        return self._buffered_stream_response(
+                            provider, target_body, url, request_headers, "anthropic", resolved_model,
+                            privacy_result.pii_mapping
+                        ), True, provider
+                    else:
+                        return self._stream_response(
+                            provider, target_body, url, request_headers, "anthropic", resolved_model
+                        ), True, provider
                 else:
                     response = await self.client.post(
                         url,
@@ -135,6 +206,17 @@ class LLMProxy:
                     final_response = ResponseTranslator.translate_to_anthropic(
                         response_json, provider, resolved_model
                     )
+
+                    # Restore PII if anonymized
+                    if privacy_result and privacy_result.should_anonymize and self.privacy_processor:
+                        # Restore content in response
+                        content = final_response.get("content", [])
+                        for block in content:
+                            if block.get("type") == "text" and "text" in block:
+                                restored = self.privacy_processor.restore_response(
+                                    block["text"], privacy_result.pii_mapping
+                                )
+                                block["text"] = restored
 
                     self.router.record_success(provider)
                     return final_response, False, provider
@@ -248,6 +330,117 @@ class LLMProxy:
                             yield f"data: {translated}\n\n".encode("utf-8")
 
             self.router.record_success(provider)
+
+    async def _buffered_stream_response(
+        self,
+        provider: ProviderConfig,
+        body: Dict[str, Any],
+        url: str,
+        headers: Dict[str, str],
+        output_format: str,
+        request_model: Optional[str],
+        pii_mapping: Dict[str, Any],
+    ) -> AsyncGenerator[bytes, None]:
+        """Buffer full response, restore PII, then yield the full restored response."""
+        model = request_model or provider.default_model
+        full_text = ""
+
+        async with self.client.stream(
+            "POST",
+            url,
+            json=body,
+            headers=headers,
+            timeout=httpx.Timeout(300.0),
+        ) as response:
+            if response.status_code == 429:
+                self.router.record_failure(provider)
+                yield b""
+                return
+
+            response.raise_for_status()
+
+            if provider.provider_type == ProviderType.OPENAI and output_format == "openai":
+                # Accumulate all text from OpenAI streaming
+                async for line in response.aiter_lines():
+                    if not line.strip():
+                        continue
+
+                    if line.startswith("data: "):
+                        line = line[6:]
+
+                    if line == "[DONE]":
+                        break
+
+                    try:
+                        chunk = eval(line) if '{' in line else None  # noqa: P101
+                        if not isinstance(chunk, dict):
+                            chunk = {}
+                    except Exception:
+                        continue
+
+                    # Extract delta content
+                    choices = chunk.get("choices", [])
+                    for choice in choices:
+                        delta = choice.get("delta", {})
+                        if "content" in delta:
+                            full_text += delta["content"]
+            else:
+                # Accumulate from translated streaming
+                async for line in response.aiter_lines():
+                    if not line.strip():
+                        continue
+
+                    if line.startswith("data: "):
+                        line = line[6:]
+
+                    if line == "[DONE]":
+                        break
+
+                    try:
+                        chunk = eval(line) if '{' in line else None  # noqa: P101
+                        if not isinstance(chunk, dict):
+                            chunk = {}
+                    except Exception:
+                        continue
+
+                    if output_format == "openai":
+                        translated = StreamTranslator.translate_chunk_to_openai(chunk, provider)
+                        if translated:
+                            choices = translated.get("choices", [])
+                            for choice in choices:
+                                delta = choice.get("delta", {})
+                                if "content" in delta:
+                                    full_text += delta["content"]
+
+            self.router.record_success(provider)
+
+        # Restore PII from mapping
+        if self.privacy_processor:
+            full_text = self.privacy_processor.restore_response(full_text, pii_mapping)
+
+        # Yield the restored response as a single SSE stream
+        if output_format == "openai":
+            # Construct a single OpenAI-compatible chunk stream
+            import json
+            import time
+            chunk = {
+                "id": f"cmpl-{int(time.time())}",
+                "object": "chat.completion.chunk",
+                "created": int(time.time()),
+                "model": model,
+                "choices": [{
+                    "index": 0,
+                    "delta": {
+                        "content": full_text,
+                    },
+                    "finish_reason": "stop",
+                }],
+            }
+            yield f"data: {json.dumps(chunk)}\n\n".encode("utf-8")
+            yield b"data: [DONE]\n\n"
+        else:
+            # For Anthropic output format, just yield the text
+            yield full_text.encode("utf-8")
 
     async def test_provider(self, provider: ProviderConfig) -> Tuple[bool, Optional[str], float]:
         """Test connectivity to a provider. Returns (success, error message, latency_ms)."""

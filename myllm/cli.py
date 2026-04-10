@@ -63,8 +63,8 @@ def start_command(host, port):
 @click.option("--priority", type=int, default=1, help="Priority for failover (lower = higher priority)")
 def add_command(name, base_url, api_key, default_model, simple_model, complex_model, enabled, priority):
     """Add a new provider configuration."""
-    from llm_proxy.models import ProviderConfig
-    from llm_proxy.config import add_provider
+    from myllm.models import ProviderConfig
+    from myllm.config import add_provider
 
     provider = ProviderConfig(
         name=name,
@@ -184,7 +184,7 @@ def default_command(name):
 def test_command(name):
     """Test connectivity to a provider."""
     import asyncio
-    from llm_proxy.proxy import LLMProxy
+    from myllm.proxy import LLMProxy
 
     config = load_config()
     provider = config.get_provider(name)
@@ -247,7 +247,7 @@ def benchmark_command(auto_set, providers):
         click.echo(click.style(f"* Fastest: {fastest.name} ({fastest.latency_ms:.0f}ms)", fg="green"))
 
         if auto_set:
-            from llm_proxy.config import set_default_provider
+            from myllm.config import set_default_provider
             set_default_provider(fastest.name)
             click.echo(click.style(f"* Set '{fastest.name}' as default provider", fg="green"))
 

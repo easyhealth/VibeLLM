@@ -82,7 +82,7 @@ This will:
 To use as a Claude Code skill, add this to your Claude Code skills directory:
 
 ```
-ln -s D:/llm-proxy/llm-proxy-skills/llm_proxy.py ~/.config/claude-code/skills/
+ln -s D:/llm-proxy/myllm-skills/llm_proxy.py ~/.config/claude-code/skills/
 ```
 
 Then Claude can respond to natural language commands like:
