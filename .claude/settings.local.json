@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip install:*)",
+      "Bash(llm-proxy:*)",
+      "Bash(python:*)",
+      "Bash(pip freeze:*)",
+      "Bash(findstr -i \"fastapi uvicorn httpx click pydantic pydantic-settings pyyaml tabulate\")"
+    ]
+  }
+}

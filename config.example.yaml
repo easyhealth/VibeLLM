@@ -1,0 +1,68 @@
+# Example configuration for LLM Proxy
+# Copy this to ~/.config/llm-proxy/config.yaml and edit
+
+# Default provider to use when none is explicitly requested
+default_provider: openai-main
+
+# List of configured providers
+providers:
+  - name: openai-main
+    base_url: https://api.openai.com/v1
+    api_key: sk-xxx
+    default_model: gpt-4o
+    enabled: true
+    priority: 1
+    # Auto selection: different models for simple vs complex tasks
+    simple_model: gpt-4o-mini
+    complex_model: gpt-4o
+    # Model mapping: generic name -> provider-specific name
+    model_mapping:
+      gpt-4o: gpt-4o-20240806
+      gpt-4: gpt-4-turbo
+    last_latency_ms: null
+
+  - name: openai-backup
+    base_url: https://your-backend-proxy.example.com/v1
+    api_key: sk-yyy
+    default_model: gpt-4o
+    enabled: true
+    priority: 2
+    simple_model: gpt-4o-mini
+    complex_model: gpt-4o
+    model_mapping: {}
+    last_latency_ms: null
+
+  - name: anthropic
+    base_url: https://api.anthropic.com/v1
+    api_key: sk-xxx
+    default_model: claude-3-5-sonnet-20241022
+    enabled: true
+    priority: 1
+    simple_model: claude-3-5-haiku-20241022
+    complex_model: claude-3-5-sonnet-20241022
+    # Map generic names to Anthropic specific versions
+    model_mapping:
+      sonnet: claude-3-5-sonnet-20241022
+      haiku: claude-3-5-haiku-20241022
+      opus: claude-3-opus-20240229
+    last_latency_ms: null
+
+  - name: gemini
+    base_url: https://generativelanguage.googleapis.com/v1beta
+    api_key: your-google-api-key
+    default_model: gemini-1.5-pro
+    enabled: true
+    priority: 3
+    simple_model: gemini-1.5-flash
+    complex_model: gemini-1.5-pro
+    last_latency_ms: null
+
+  - name: ollama-local
+    base_url: http://localhost:11434/v1
+    api_key: ""
+    default_model: llama3
+    enabled: false
+    priority: 10
+    simple_model: llama3
+    complex_model: llama3:70b
+    last_latency_ms: null
